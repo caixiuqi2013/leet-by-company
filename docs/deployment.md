@@ -6,7 +6,7 @@ Google OAuth and local API keys are still pending. No production website has bee
 deployed. See [validation](../VALIDATION.md) for observed checks.
 
 The steps below describe a fresh setup; do not rerun the initial migration on an
-already initialized database. The user-facing build flow is documented [here](user-flow.md).
+already initialized database. The user-facing build flow is documented [here](architecture.md#user-flow-and-recovery).
 
 ## Supabase
 

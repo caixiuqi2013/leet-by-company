@@ -23,7 +23,7 @@ Historical views use current completion, not past completion snapshots.
 
 ## Import and versioning
 
-See [current user flow](user-flow.md) for exact button labels, loading states, and recovery.
+See [current user flow](architecture.md#user-flow-and-recovery) for exact button labels, loading states, and recovery.
 
 The current user request supersedes the original manual-upload UI requirement:
 the extension's single Build list action starts extraction and opens the website

@@ -15,7 +15,7 @@ companies, ranges, and historical list versions.
 
 The extension has one primary build action. There is no separate **Extract problems**
 button, website JSON upload, or second Build confirmation. **Export JSON** is an
-optional backup under **Export a backup**. See the [user flow and recovery guide](docs/user-flow.md)
+optional backup under **Export a backup**. See the [user flow and recovery guide](docs/architecture.md#user-flow-and-recovery)
 for loading states, sign-in, cancellation, and retries.
 
 ## Current delivery: 0.5.1
@@ -112,7 +112,7 @@ Partial/unknown exports may be downloaded for diagnosis but cannot be imported.
 
 ## Learn the implementation
 
-- [User flow and recovery](docs/user-flow.md)
+- [User flow and recovery](docs/architecture.md#user-flow-and-recovery)
 - [Requirements](docs/requirements.md)
 - [Architecture and database](docs/architecture.md)
 - [API contract](docs/api.md)

@@ -14,5 +14,5 @@ Pending work survives reload and Google login in the same browser. Website
 **Try again** resumes pending work; source failures need a new extension build.
 
 Saving requires `.env.local`, the database migration, and an invited Google account.
-See the [user flow](../../docs/user-flow.md), [setup instructions](../../docs/deployment.md),
+See the [user flow](../../docs/architecture.md#user-flow-and-recovery), [setup instructions](../../docs/deployment.md),
 and [codebase guide](../../docs/codebase-guide.md).

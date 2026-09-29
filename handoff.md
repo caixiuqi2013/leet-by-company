@@ -3,7 +3,7 @@
 ## Current state: 2026-09-28
 
 - Repository: outputs/leet-by-company; branch codex/leet-by-company.
-- Published baseline: 5cc0a3f on GitHub main, release 0.5.1. Prior implementation
+- Published baseline: b33eaf6 on GitHub main, release 0.5.1. Prior implementation
   and rename were committed and synchronized; the entries below are historical.
 - Current UX: one Build list & start practicing action in the extension starts
   extraction and immediately opens the website loading page. Complete results
@@ -19,7 +19,7 @@
 - Ignored apps/web/.env.local contains the project URL but API keys remain blank.
   Ignored work/ contains setup SQL; do not rerun it on the initialized database.
 - No successful OAuth login or authenticated import has been verified yet.
-- Latest request: audit/correct docs for the one-click flow. See docs/user-flow.md.
+- Latest request: consolidate the current flow directly into docs/architecture.md.
   Next: finish Google setup and local credentials, then verify login/import.
 
 ## Historical implementation record (superseded status statements)
@@ -160,3 +160,18 @@
 - Publish through the connected GitHub app, then fetch and verify the commit tree
   before synchronizing the local branch. Supabase/Google setup remains unfinished
   as described in the current status above.
+
+## Architecture consolidation: 2026-09-28
+
+- Replaced the architecture overview with the implemented one-click build,
+  immediate loading page, progress, automatic save, and practice navigation.
+- Merged the user-flow and recovery guide into docs/architecture.md, removed
+  docs/user-flow.md, and redirected its documentation links to the new section.
+- Kept the actual 24-hour task access expiry in the internal extension boundary
+  explanation, rather than presenting local staging as a user-facing workflow.
+- Documentation-only update; no runtime behavior changed.
+- Validation: pnpm format:check, git diff --check, and relative documentation
+  link checks passed. Application tests were not rerun for this docs-only change.
+- User authorized publishing this consolidation to GitHub main. Publication
+  includes the obsolete guide deletion and updated links; local secrets remain
+  excluded. Verify the published tree before synchronizing the local branch.
