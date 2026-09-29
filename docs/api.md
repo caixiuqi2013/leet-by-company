@@ -5,16 +5,16 @@ require `Origin` equal to configured `APP_URL` and `Content-Type: application/js
 Responses are JSON with `Cache-Control: no-store`. UUID inputs are validated.
 No endpoint accepts `user_id`. Request bodies are limited to 16 MB.
 
-| Method and path                                        | Request                                                               | Response                                                 |
-| ------------------------------------------------------ | --------------------------------------------------------------------- | -------------------------------------------------------- |
-| POST `/api/imports`                                    | `{extraction: ExtractionV1, idempotencyKey: extraction.extractionId}` | `{importId,snapshotId,listId,sharedOutcome,warnings}`    |
-| GET `/api/me/companies`                                | None                                                                  | `[{slug,name,recencies:[{key,listId,total,completed}]}]` |
-| GET `/api/me/lists?company=google&recency=thirty-days` | Exact company and canonical key                                       | Authorized list projection below                         |
-| GET `/api/me/lists/{listId}/problems`                  | Optional `topic`, `difficulty=Easy                                    | Medium                                                   | Hard`, `completed=true | false`, `page>=1`, `limit=1..100` | `{problems,filteredTotal,page,limit,summary}` |
-| GET `/api/me/lists/{listId}/versions`                  | None                                                                  | `[{snapshotId,selectedAt,selectionSource,extractedAt}]`  |
-| GET `/api/me/lists/{listId}/versions/{snapshotId}`     | Previously selected snapshot                                          | List projection with current completion                  |
-| POST `/api/me/lists/{listId}/refresh`                  | `{targetSnapshotId}`                                                  | `{snapshotId,changed}`                                   |
-| PUT `/api/me/progress/{problemId}`                     | `{completed:boolean}`                                                 | `{problemId,completed}`                                  |
+| Method and path                                        | Request                                                                                                   | Response                                                 |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| POST `/api/imports`                                    | `{extraction: ExtractionV1, idempotencyKey: extraction.extractionId}`                                     | `{importId,snapshotId,listId,sharedOutcome,warnings}`    |
+| GET `/api/me/companies`                                | None                                                                                                      | `[{slug,name,recencies:[{key,listId,total,completed}]}]` |
+| GET `/api/me/lists?company=google&recency=thirty-days` | Exact company and canonical key                                                                           | Authorized list projection below                         |
+| GET `/api/me/lists/{listId}/problems`                  | Optional `topic`, `difficulty` (Easy, Medium, Hard), `completed` (true, false), `page>=1`, `limit=1..100` | `{problems,filteredTotal,page,limit,summary}`            |
+| GET `/api/me/lists/{listId}/versions`                  | None                                                                                                      | `[{snapshotId,selectedAt,selectionSource,extractedAt}]`  |
+| GET `/api/me/lists/{listId}/versions/{snapshotId}`     | Previously selected snapshot                                                                              | List projection with current completion                  |
+| POST `/api/me/lists/{listId}/refresh`                  | `{targetSnapshotId}`                                                                                      | `{snapshotId,changed}`                                   |
+| PUT `/api/me/progress/{problemId}`                     | `{completed:boolean}`                                                                                     | `{problemId,completed}`                                  |
 
 List projection: `{listId,company:{slug,name},recencyKey,snapshotId,currentSnapshotId,
 extractedAt,problems,versions,newerVersion,summary}`. `newerVersion` is null or
@@ -49,6 +49,24 @@ Errors: `{error:{code}}`.
 | 503  | `configuration-required`, `database-unavailable`          |
 | 500  | `internal-error`                                          |
 
+## Extension-to-website build protocol
+
+The popup sends `BUILD_LIST` to the extension worker. The worker captures the
+source tab, stores a task-bound random capability, opens `/import`, then runs
+extraction. The website polls `GET_PENDING_IMPORT` through Chrome external
+messaging approximately once per second, with a 15-second per-call timeout.
+
+| Response                                               | Website behavior                                                   |
+| ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `{status: "building", count, total, company, recency}` | Display extraction progress; total may be null.                    |
+| `{status: "ready", extraction}`                        | Validate, retain locally, then automatically POST `/api/imports`.  |
+| `{error: code}`                                        | Show recovery instructions; never import a partial or failed task. |
+
+The external message requires the exact trusted origin and `/import`, a top-level
+website sender, a matching capability, and a task that has not been replaced or
+expired. The capability expires after 24 hours. The API above remains independent
+of this transport; retaining an import API does not imply a website upload control.
+
 OAuth routes are `/auth/login` and `/auth/callback`. The callback always returns to
-`/import`; pending payloads remain local across the redirect. If no payload exists,
+`/import`; pending capabilities or validated payloads remain local across the redirect. If no payload exists,
 users can navigate to My companies. Invalid or uninvited sessions cannot access data.

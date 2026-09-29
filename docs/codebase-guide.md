@@ -3,25 +3,32 @@
 Read `packages/shared/src/schema.ts` first. It defines an extraction independently
 of Chrome or the website. Then follow these flows.
 
-## Extract
+## Build from the extension
 
-1. `apps/extension/src/popup.tsx` renders status and sends BUILD_LIST.
-2. `worker.ts` creates a persisted task, injects `content.ts`, and pins the document.
+1. `apps/extension/src/popup.tsx` renders **Build list & start practicing** and sends
+   `BUILD_LIST`. This starts a fresh extraction, not a previously extracted export.
+2. `worker.ts` captures the LeetCode source tab and persists the task. It calls
+   `handoff.ts` to open `/import` before starting `run()`, which injects `content.ts`
+   and pins the source document. Opening the website cannot change the source tab.
 3. `dom.ts` verifies source identity; `ready.ts` allows the SPA up to ten seconds.
 4. `leetcode.ts` builds the observed GraphQL request and normalizes source fields.
 5. `engine.ts` paginates, checks context before/after requests, deduplicates, persists
    partial checkpoints and decides completeness. It does not scroll the page.
-6. `state.ts` handles task recovery. The popup exports validated JSON.
+6. `state.ts` handles task recovery. The worker stores progress for the website to
+   poll. Optional JSON backup export is tucked into popup details; it is not the
+   normal route to practice. No standalone Extract or Retry button is rendered.
 
 Why check context repeatedly? Navigation can occur while a request is in flight.
 The response must not enter a list whose company or recency has since changed.
 
-## Import
+## Automatic website handoff
 
 1. `handoff.ts` stages a task-bound capability and opens the website before extraction starts.
 2. `components/importer.tsx` polls build progress through `lib/build-flow.ts`.
    Ready payloads are validated and retained across login, saved automatically and
-   opened in the existing practice view. No file-picker or second confirmation is shown.
+   opened in the existing practice view. It shows reading, saving, and opening
+   phases. No file picker or second Build confirmation is shown. The website
+   **Try again** resumes the pending handoff/save; it does not command extraction.
 3. `app/api/[[...path]]/route.ts` authenticates, checks request shape and routes imports.
 4. `lib/import-service.ts` validates through shared `import.ts`, computes stable
    content/request hashes and invokes one RPC through `lib/server.ts`.
@@ -59,5 +66,9 @@ service credentials. SQL tables and privileged RPCs deny browser roles entirely.
 - `import.test.ts` checks compatibility, normalization and overlapping topic counts.
 - `database.test.ts` executes migration/functions on embedded PostgreSQL, including
   rollback and access failures. Optional localhost PostgreSQL tests real contention.
-- `handoff.test.ts` exercises hostile origins, frames, IDs and expired capabilities.
+- `handoff.test.ts` exercises progress/readiness and hostile origins, frames, IDs,
+  replaced tasks and expired capabilities.
+- `build-flow.test.ts` covers progress polling, validated readiness, cancellation,
+  reload/login recovery and readable setup/authentication errors.
+- `worker.test.ts` verifies the website opens before RUN and keeps the source tab.
 - `VALIDATION.md` distinguishes these tests from browser observations and user reports.

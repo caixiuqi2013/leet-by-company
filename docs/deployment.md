@@ -1,4 +1,12 @@
-# Deployment preparation (not performed)
+# Setup and deployment
+
+Current development status (2026-09-28): the authorized Supabase schema, owner
+invitation, Before User Created hook, and localhost callback have been configured.
+Google OAuth and local API keys are still pending. No production website has been
+deployed. See [validation](../VALIDATION.md) for observed checks.
+
+The steps below describe a fresh setup; do not rerun the initial migration on an
+already initialized database. The user-facing build flow is documented [here](user-flow.md).
 
 ## Supabase
 

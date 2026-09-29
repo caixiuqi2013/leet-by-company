@@ -1,4 +1,4 @@
-# Current update: one-click building, 0.5.1
+# Current release: one-click building, 0.5.1
 
 The extension now starts extraction and opens the website with one Build list action.
 The website polls real task progress, automatically saves validated complete data,
@@ -16,14 +16,27 @@ The production server was started on localhost:3000. Browser verification confir
 that the upload and second build controls are removed, the existing Microsoft pending
 list survives reload, and missing setup produces a readable recovery message.
 
-Supabase configuration remains absent. Automatic server save/navigation is implemented
-but cannot be verified live until authentication and database setup are complete.
+## Setup verification: 2026-09-28
+
+Applied the schema and owner invitation to the user-authorized Supabase project
+through its SQL Editor after verifying no existing application tables/functions.
+Observed 10 tables, all 10 with RLS; an active owner invitation; anon denied import
+execution; service_role allowed import execution. Direct SQL hook calls accepted
+the invited email and rejected an uninvited address.
+
+Configured and verified the enabled Before User Created hook and the exact
+`http://localhost:3000/auth/callback` redirect. Google OAuth and local API keys
+remain incomplete. These checks do not establish a successful OAuth login,
+Auth-service-triggered hook execution, or authenticated end-to-end import.
+
+The earlier preview/upload observations below are historical and do not describe
+the current UI. For current instructions, see [user flow](docs/user-flow.md).
 
 ---
 
 # LeetByCompany validation
 
-## Current session: 2026-09-25, release 0.5.0
+## Historical validation: 2026-09-25, release 0.5.0 (superseded UI)
 
 These results are distinct from historical POC results. No production deployment,
 remote migration or configured Google/Supabase login was performed.
@@ -45,7 +58,7 @@ equal-time content conflicts, older/newer imports, transaction rollback, immutab
 snapshots, personal pointer isolation, explicit refresh, history with current progress,
 unauthorized reads/progress/RPCs and hostile extension handoff messages.
 
-### Browser observations this session
+### Historical browser observations before the one-click change
 
 The local Next.js production server returned HTTP 200. Using the in-app browser,
 selected the real checked-in 0.2.0 export through the file picker. The import preview
@@ -59,7 +72,7 @@ the observed Google page structure and supplied Goldman Sachs route. General sup
 is guarded by runtime heading, visible recency and rendered-link checks; it is not a
 claim of successful extraction for every company or name/slug alias.
 
-### Still unverified
+### Unverified at the 0.5.0 checkpoint
 
 - Real 0.4.0 `Google_30Days.json` mentioned in the request was not attached/found.
   Compatibility is checked with a clearly synthesized 0.4 metadata variant of the

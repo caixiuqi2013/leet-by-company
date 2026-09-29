@@ -9,6 +9,15 @@ website. Build the complete company + recency list you are authorized to view
 with one click from the extension. Progress follows each problem across
 companies, ranges, and historical list versions.
 
+## Current flow: one click from LeetCode
+
+**Build list & start practicing → loading page → automatic save → organized list.**
+
+The extension has one primary build action. There is no separate **Extract problems**
+button, website JSON upload, or second Build confirmation. **Export JSON** is an
+optional backup under **Export a backup**. See the [user flow and recovery guide](docs/user-flow.md)
+for loading states, sign-in, cancellation, and retries.
+
 ## Current delivery: 0.5.1
 
 - React/TypeScript Manifest V3 extension with paginated extraction, cancellation,
@@ -45,8 +54,9 @@ requires a disposable localhost PostgreSQL server (see deployment documentation)
 
 Copy `apps/web/.env.example` to `apps/web/.env.local`, then supply your own project
 configuration. Never commit a service key. [Deployment guide](docs/deployment.md)
-explains the migration, invitations, OAuth and Vercel setup. No remote migration
-or production deployment was performed during implementation.
+explains the migration, invitations, OAuth and Vercel setup. The development
+Supabase database has now been initialized; Google OAuth and local credentials
+are still being configured. No production website deployment has been performed.
 
 ## Chrome extension
 
@@ -102,6 +112,7 @@ Partial/unknown exports may be downloaded for diagnosis but cannot be imported.
 
 ## Learn the implementation
 
+- [User flow and recovery](docs/user-flow.md)
 - [Requirements](docs/requirements.md)
 - [Architecture and database](docs/architecture.md)
 - [API contract](docs/api.md)

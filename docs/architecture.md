@@ -13,6 +13,38 @@ flowchart TD
  RPC --> DB[Supabase PostgreSQL]
 ```
 
+## One-click build sequence
+
+```mermaid
+sequenceDiagram
+ participant U as User
+ participant E as Extension worker
+ participant L as LeetCode source tab
+ participant W as Website /import
+ participant A as Import API
+ U->>E: Build list & start practicing
+ E->>E: Capture source tab and persist task
+ E->>W: Open loading page with task capability
+ E->>L: Probe source and start extraction
+ loop Until ready or terminal error
+  L->>E: Progress/checkpoints
+  W->>E: GET_PENDING_IMPORT
+  E-->>W: building, ready, or error
+ end
+ W->>W: Validate complete result and retain locally
+ opt Sign-in required
+  W->>U: Sign in with Google
+  U->>W: Return after OAuth; resume pending save
+ end
+ W->>A: POST /api/imports
+ A-->>W: Saved list and warnings
+ W->>U: Open company practice list automatically
+```
+
+There is no Extract-first prerequisite or web upload/confirmation step. Popup
+closure does not cancel reading. Source changes and cancellation stop the task;
+only a complete validated result reaches the import API. See [user flow](user-flow.md).
+
 ## Database relationships
 
 ```mermaid

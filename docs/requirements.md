@@ -23,6 +23,8 @@ Historical views use current completion, not past completion snapshots.
 
 ## Import and versioning
 
+See [current user flow](user-flow.md) for exact button labels, loading states, and recovery.
+
 The current user request supersedes the original manual-upload UI requirement:
 the extension's single Build list action starts extraction and opens the website
 immediately. The website displays real progress, saves via the validated import
@@ -52,7 +54,8 @@ changes view state. Progress is never created or removed merely by importing.
 
 ## Release boundaries
 
-No production deployment or remote migrations authorized. No product decisions
-remain unresolved. External configuration and live validation are still required:
-Supabase/Google OAuth, exact production origin, owner/friend allowlist, missing real
+The user authorized setup of the development Supabase project on 2026-09-28;
+the migration and owner invitation have been applied. Production website deployment
+remains outside the current setup. External configuration and live validation are
+still required: Google OAuth, local API keys, exact production origin, missing real
 0.4.0 Google_30Days.json, and live representative non-Google extraction.

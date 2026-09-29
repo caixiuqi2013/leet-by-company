@@ -1,10 +1,28 @@
 # Session handoff
 
-- Date: 2026-09-25
-- Branch: codex/leet-by-company (prior implementation branch: codex/leetcode-poc)
-- Baseline commit: eaf8892. Fetched origin/main 8c93d56; initial file trees matched.
-- Working tree was clean at start. All current changes belong to this implementation;
-  they remain uncommitted and have not been pushed. No remote migrations or deployment.
+## Current state: 2026-09-28
+
+- Repository: outputs/leet-by-company; branch codex/leet-by-company.
+- Published baseline: 5cc0a3f on GitHub main, release 0.5.1. Prior implementation
+  and rename were committed and synchronized; the entries below are historical.
+- Current UX: one Build list & start practicing action in the extension starts
+  extraction and immediately opens the website loading page. Complete results
+  save and open practice automatically; no Extract-first or JSON-upload UI.
+- Current local changes: documentation clarification and setup status records.
+- Supabase migration and owner invitation have been applied to the authorized
+  project. All 10 tables have RLS, anon cannot execute import, service_role can.
+- Before User Created hook is enabled; localhost Site URL/callback are configured.
+  Direct SQL checks accepted the owner and rejected an uninvited address.
+- Google Cloud project leetbycompany was created. OAuth branding/client setup is
+  unfinished; the browser form was interrupted while entering app information.
+  Re-inspect its current state before continuing. Supabase Google is still disabled.
+- Ignored apps/web/.env.local contains the project URL but API keys remain blank.
+  Ignored work/ contains setup SQL; do not rerun it on the initialized database.
+- No successful OAuth login or authenticated import has been verified yet.
+- Latest request: audit/correct docs for the one-click flow. See docs/user-flow.md.
+  Next: finish Google setup and local credentials, then verify login/import.
+
+## Historical implementation record (superseded status statements)
 
 ## Completed implementation
 
@@ -102,3 +120,43 @@
 - No secret-pattern matches found in commit candidates; only .env.example is
   eligible for commit. Supabase remains unconfigured; no deployment or migration.
 - Next step remains Supabase/Google setup and authenticated end-to-end validation.
+
+## Supabase setup checkpoint: 2026-09-28
+
+- User created project qeswonfxsxicfqbmtpoy and explicitly requested setup.
+- User supplied the Google account for the application's invitation list; it is
+  included only in the ignored work/supabase-setup.sql, not tracked documentation.
+- Verified 001_leetbycompany.sql is present (227 lines, 16049 bytes). Earlier
+  conversation links used the old repository folder; opened the correct file.
+- Created ignored apps/web/.env.local with APP_URL=http://localhost:3000 and the
+  supplied Supabase URL. Both API key values remain empty. File permissions: 0600.
+- Prepared ignored work/supabase-preflight.sql (read-only schema inspection) and
+  work/supabase-setup.sql (existing migration plus owner invitation in one transaction).
+  Neither has been executed remotely. Inspect the existing schema before setup.
+- Chrome tab discovery/claiming works, but dashboard DOM and screenshots fail with
+  debugger-unattached/timeouts, including a fresh tab. Requested browser extension
+  reconnection. No remote database, OAuth, invitation, or Auth setting changed.
+- Next: restore browser connection; inspect schema; apply setup if empty; configure
+  localhost callback, invitation Auth hook, Google provider, and local API keys;
+  then verify real invited-user login and import. No Google OAuth client verified.
+
+## Documentation correction: 2026-09-28
+
+- Audited current popup, worker, handoff, importer, and build-flow implementation.
+- Added docs/user-flow.md with exact controls, loading phases, automatic navigation,
+  no manual upload/second confirmation, optional backup, and distinct retry paths.
+- Updated README, web README, requirements, architecture, codebase and API guides.
+- Marked the old preview/file-picker validation as historical and reconciled setup
+  status with the remote migration and Auth changes actually completed today.
+- Application behavior is unchanged by this documentation update.
+- Documentation validation: format:check, git diff --check, and relative-link
+  existence checks passed. No runtime changes; application tests were not rerun.
+
+## Documentation publication checkpoint: 2026-09-28
+
+- User requested publishing the documentation corrections to GitHub.
+- Publication scope is ten documentation files, including docs/user-flow.md.
+  Local environment credentials and setup SQL remain ignored and excluded.
+- Publish through the connected GitHub app, then fetch and verify the commit tree
+  before synchronizing the local branch. Supabase/Google setup remains unfinished
+  as described in the current status above.
