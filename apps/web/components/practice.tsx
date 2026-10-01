@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { api, errorText } from '../lib/client';
 import { RECENCIES } from '../../../packages/shared/src/recency';
 import {
-  filterProblems,
+  groupProblems,
   summarize,
   type PracticeProblem,
 } from '../lib/practice';
@@ -47,8 +47,7 @@ export default function Practice({ slug }: { slug: string }) {
   }, [slug]);
   const [topic, setTopic] = useState(''),
     [difficulty, setDifficulty] = useState(''),
-    [completed, setCompleted] = useState(''),
-    [page, setPage] = useState(1);
+    [completed, setCompleted] = useState('');
   useEffect(() => {
     let live = true;
     api('/api/me/companies')
@@ -78,7 +77,6 @@ export default function Practice({ slug }: { slug: string }) {
     setError('');
     setDismissed(false);
     setTopic('');
-    setPage(1);
     api(`/api/me/lists?company=${encodeURIComponent(slug)}&recency=${range}`)
       .then((value) => {
         if (live) setList(value);
@@ -112,7 +110,6 @@ export default function Practice({ slug }: { slug: string }) {
     setBusy(true);
     try {
       setList(await api(`/api/me/lists/${list.listId}/versions/${snapshot}`));
-      setPage(1);
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -145,15 +142,8 @@ export default function Practice({ slug }: { slug: string }) {
     }
   }
   const summary = list ? summarize(list.problems) : null;
-  const filtered = list
-    ? filterProblems(list.problems, {
-        topic: topic || undefined,
-        difficulty: (difficulty || undefined) as
-          'Easy' | 'Medium' | 'Hard' | undefined,
-        completed: (completed || undefined) as 'true' | 'false' | undefined,
-        page,
-        limit: 50,
-      })
+  const grouped = list
+    ? groupProblems(list.problems, { topic, difficulty, completed })
     : null;
   return (
     <>
@@ -249,7 +239,6 @@ export default function Practice({ slug }: { slug: string }) {
                 value={topic}
                 onChange={(e) => {
                   setTopic(e.target.value);
-                  setPage(1);
                 }}
               >
                 <option value="">All topics</option>
@@ -264,7 +253,6 @@ export default function Practice({ slug }: { slug: string }) {
                 value={difficulty}
                 onChange={(e) => {
                   setDifficulty(e.target.value);
-                  setPage(1);
                 }}
               >
                 <option value="">All difficulties</option>
@@ -279,7 +267,6 @@ export default function Practice({ slug }: { slug: string }) {
                 value={completed}
                 onChange={(e) => {
                   setCompleted(e.target.value);
-                  setPage(1);
                 }}
               >
                 <option value="">Any state</option>
@@ -289,85 +276,69 @@ export default function Practice({ slug }: { slug: string }) {
             </label>
           </div>
           <p className="muted">
-            {filtered?.filteredTotal} matching problems · source order ·
-            extracted {new Date(list.extractedAt).toLocaleDateString()}
+            {grouped?.total} distinct matching problems · source order within
+            each topic · extracted{' '}
+            {new Date(list.extractedAt).toLocaleDateString()}
           </p>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Done</th>
-                  <th>Problem</th>
-                  <th>Difficulty</th>
-                  <th>Topics</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered?.problems.map((p) => (
-                  <tr key={p.problemId}>
-                    <td>
+          <p className="muted">
+            Problems can appear in more than one topic. Marking one complete
+            updates it everywhere.
+          </p>
+          <div className="topic-sections">
+            {grouped?.groups.map((group) => (
+              <details className="topic-section" key={group.topic} open>
+                <summary>
+                  <span>{group.topic}</span>
+                  <span className="topic-count">
+                    {group.completed} / {group.problems.length} completed
+                  </span>
+                </summary>
+                <ul className="problem-list">
+                  {group.problems.map((p) => (
+                    <li
+                      className={`problem-row${p.completed ? ' is-complete' : ''}`}
+                      key={p.problemId}
+                    >
                       <input
-                        aria-label={`Mark ${p.title} completed`}
+                        aria-label={`Mark ${p.title} completed in ${group.topic}`}
                         type="checkbox"
                         checked={p.completed}
                         disabled={busy}
                         onChange={() => void progress(p)}
                       />
-                    </td>
-                    <td>
-                      <a target="_blank" rel="noreferrer" href={p.url}>
-                        {p.frontendId}. {p.title}
-                      </a>
-                      <small>
-                        Position {p.position}
-                        {p.rank !== null ? ` · Source rank ${p.rank}` : ''}
-                        {p.frequency !== null
-                          ? ` · Frequency ${p.frequency}`
-                          : ''}
-                      </small>
-                    </td>
-                    <td>{p.difficulty}</td>
-                    <td>
-                      {(p.topics.length ? p.topics : ['Uncategorized']).map(
-                        (t) => (
-                          <button
-                            className="tag"
-                            key={t}
-                            onClick={() => {
-                              setTopic(t);
-                              setPage(1);
-                            }}
-                          >
-                            {t}
-                          </button>
-                        ),
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <div className="problem-name">
+                        <a target="_blank" rel="noreferrer" href={p.url}>
+                          {p.frontendId ? `${p.frontendId}. ` : ''}
+                          {p.title}
+                        </a>
+                        <div className="problem-topics">
+                          {(p.topics.length ? p.topics : ['Uncategorized']).map(
+                            (t) => (
+                              <button
+                                className="tag"
+                                key={t}
+                                onClick={() => setTopic(t)}
+                              >
+                                {t}
+                              </button>
+                            ),
+                          )}
+                        </div>
+                      </div>
+                      <span
+                        className={`difficulty difficulty-${p.difficulty.toLowerCase()}`}
+                      >
+                        {p.difficulty}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
           </div>
-          {filtered?.filteredTotal === 0 && (
-            <p>No problems match these filters.</p>
+          {grouped?.total === 0 && (
+            <p role="status">No problems match these filters.</p>
           )}
-          <div className="actions">
-            <button
-              className="secondary"
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
-              Previous
-            </button>
-            <span>Page {page}</span>
-            <button
-              className="secondary"
-              disabled={page * 50 >= (filtered?.filteredTotal ?? 0)}
-              onClick={() => setPage(page + 1)}
-            >
-              Next
-            </button>
-          </div>
           <details>
             <summary>Version history</summary>
             <p className="muted">

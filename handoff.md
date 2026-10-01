@@ -1,26 +1,29 @@
 # Session handoff
 
-## Current state: 2026-09-28
+## Current state: 2026-10-01
 
 - Repository: outputs/leet-by-company; branch codex/leet-by-company.
-- Published baseline: b33eaf6 on GitHub main, release 0.5.1. Prior implementation
+- Published baseline: f990fd2 on GitHub main, release 0.5.1. Prior implementation
   and rename were committed and synchronized; the entries below are historical.
 - Current UX: one Build list & start practicing action in the extension starts
   extraction and immediately opens the website loading page. Complete results
   save and open practice automatically; no Extract-first or JSON-upload UI.
-- Current local changes: documentation clarification and setup status records.
+- Current publication scope: grouped practice lists, study-plan topic ordering,
+  regression tests, architecture and setup status documentation.
 - Supabase migration and owner invitation have been applied to the authorized
   project. All 10 tables have RLS, anon cannot execute import, service_role can.
 - Before User Created hook is enabled; localhost Site URL/callback are configured.
   Direct SQL checks accepted the owner and rejected an uninvited address.
-- Google Cloud project leetbycompany was created. OAuth branding/client setup is
-  unfinished; the browser form was interrupted while entering app information.
-  Re-inspect its current state before continuing. Supabase Google is still disabled.
-- Ignored apps/web/.env.local contains the project URL but API keys remain blank.
+- Google Cloud project leetbycompany has OAuth branding and a Web application
+  client named LeetByCompany Supabase. User accepted Google's policy and explicitly
+  approved client creation and credential transfer. The exact Supabase callback
+  is configured. Google Enabled was verified in Supabase on September 28.
+- Google testing audience/test users and a real sign-in still need verification.
+- Ignored apps/web/.env.local contains the project URL and working API keys.
   Ignored work/ contains setup SQL; do not rerun it on the initialized database.
 - No successful OAuth login or authenticated import has been verified yet.
-- Latest request: consolidate the current flow directly into docs/architecture.md.
-  Next: finish Google setup and local credentials, then verify login/import.
+- Latest request: commit and publish the completed practice-view changes.
+  Remaining verification: authenticated visual review and end-to-end login/import.
 
 ## Historical implementation record (superseded status statements)
 
@@ -175,3 +178,106 @@
 - User authorized publishing this consolidation to GitHub main. Publication
   includes the obsolete guide deletion and updated links; local secrets remain
   excluded. Verify the published tree before synchronizing the local branch.
+
+## Setup resumption: 2026-09-28
+
+- Architecture consolidation was published as f990fd2 and the local branch was
+  synchronized with a clean tree before resuming setup.
+- Opened the existing Google Cloud project OAuth overview. Chrome tab discovery
+  works, but page reads time out; the alternate DOM reader reports debugger
+  unattached. Requested reconnection of the Codex browser extension.
+- No remote setup changes made during this resumption. Existing database setup
+  must not be rerun. Next: inspect OAuth status, complete Google configuration,
+  configure local Supabase keys, then verify real sign-in and list saving.
+- After user reconnection, Supabase is readable; a fresh Google Cloud tab also
+  works. Google OAuth is not configured. Prepared LeetByCompany branding with
+  External/testing audience and the owner's support/contact email. Stopped at
+  Google's User Data Policy agreement; explicit confirmation is pending.
+- Confirmed Supabase Google provider is disabled and its callback is
+  https://qeswonfxsxicfqbmtpoy.supabase.co/auth/v1/callback. The visible Client IDs
+  field contains the project name rather than an OAuth client ID; replace it
+  with the actual client ID once created. No provider settings saved this turn.
+- Local environment file remains ignored, mode 0600, with both API keys empty.
+- User accepted Google's policy and created the OAuth branding configuration;
+  verified the success message and absence of OAuth clients. Prepared a Web
+  application client named LeetByCompany Supabase with the exact Supabase callback
+  above and no JavaScript origins. Creation has not been submitted. Awaiting
+  confirmation to create persistent credentials, transfer them to this Supabase
+  project, and enable Google sign-in. No client secret exists yet in this workflow.
+
+## Google provider completion and resumption: 2026-09-30
+
+- September 28: created the authorized OAuth client, transferred its generated
+  ID/secret directly to Supabase, and verified Google Enabled. Nonce checks remain
+  required and email-less accounts remain disallowed. No secret was printed or
+  committed. This supersedes the pending client-creation checkpoint above.
+- September 30: verified local keys are still empty. Chrome tab discovery works,
+  but existing-tab access and a fresh settings tab time out. Requested browser
+  extension reconnection; no remote changes made during this resumption yet.
+- Next: configure local API keys, verify OAuth testing access and Google login,
+  then verify authenticated list saving. Do not rerun the database migration.
+- Reconnection did not restore page control: a fresh tab and stable Chrome-name
+  binding still timed out. Opened the ignored .env.local for direct user entry
+  of the publishable and service_role keys, avoiding further reconnect loops.
+  No keys have been copied and no new remote settings changed in this attempt.
+
+## Local Supabase connection verified: 2026-09-30
+
+- User opened API Keys and authorized continuing. Copied existing publishable and
+  server secret keys directly into ignored apps/web/.env.local (mode 0600).
+  The existing SUPABASE_SERVICE_ROLE_KEY variable now holds an sb_secret key;
+  the Supabase client accepts it and it remains server-only. No key rotation.
+- Live checks: Auth settings HTTP 200 with Google enabled; read-only database
+  request with the server key HTTP 200. No database rows were changed by checks.
+- pnpm build:web passed. Production server started on localhost:3000 (session
+  42341). /auth/login responds HTTP 302 instead of configuration failure.
+- Browser control detached again on app reload. Completed OAuth login and saved
+  import remain unverified; user can now sign in from the local app. Google
+  testing audience may still need the owner added if Google blocks login.
+
+## Full topic practice list: 2026-09-30
+
+- Replaced the 50-row practice table and pagination with expanded, collapsible
+  source-topic sections showing completion counts and difficulty labels.
+- Kept topic, difficulty and completion dropdowns. All matching problems render;
+  multi-topic problems appear in each matching section with shared completion.
+  Overall counts remain distinct; no algorithm classification is inferred.
+- Added grouping tests covering 151 problems, source order, missing topics,
+  overlapping tags, deduplication and combined filters. Updated architecture.md.
+- Lint, typecheck, extension build passed; tests: 92 passed, one skipped. Production
+  web build, formatting, and git diff --check passed.
+- Authenticated browser visual verification is not yet performed for this layout.
+
+## Practice view resumption: 2026-10-01
+
+- Restarted the production app with network permission; localhost:3000 is ready
+  (session 72433). Company Microsoft route responds HTTP 200.
+- Browser showed the old connection-refused page before restart. Reload and the
+  subsequent page read timed out, so authenticated visual verification remains
+  unavailable. No claim that the live grouped data or completion UI was verified.
+- The implementation and previously passing checks are unchanged. Changes remain
+  local and uncommitted. User can refresh the company page to review the layout.
+
+## Study plan topic ordering: 2026-10-01
+
+- Sections and topic dropdown now share Top Interview 150 priority order, followed
+  by other topics alphabetically. Explicit sorting aliases handle source tag names
+  such as Hash Table and Heap (Priority Queue). Source labels/membership unchanged.
+- Official study-plan browser reads timed out; public HTML did not expose section
+  data. Cross-checked the 23-topic sequence against the study-plan repository
+  JawadSher/LeetCode-Top-Interview-150-Problems; no live reference verification claim.
+- Added regression coverage for ordering in both projections, remaining topics,
+  unchanged input tags, and filtering a non-priority topic.
+- Validation passed: lint, typecheck, extension build, web production build,
+  formatting and diff checks; tests 93 passed, one skipped. Restarted local app
+  to serve the new ordering. Changes remain uncommitted and have not been pushed.
+
+## Practice list publication: 2026-10-01
+
+- User authorized committing and publishing all current implementation changes.
+- Scope: grouped full-list view, shared study-plan ordering, regression tests, and
+  documentation. Local environment keys and setup SQL remain ignored/excluded.
+- Validation from the completed implementation: lint, typecheck, extension/web
+  builds and formatting passed; 93 tests passed, one skipped.
+- Publish through the GitHub connector, then verify the tree and synchronize the
+  local branch. Browser visual verification remains limited as recorded above.

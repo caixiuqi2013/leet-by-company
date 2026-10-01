@@ -128,6 +128,23 @@ start from the extension. It does not show a file upload control.
 Reload and Google sign-in preserve the pending build in the same browser and
 website origin. Once saving succeeds, the website clears its pending payload.
 
+## Practice list organization
+
+The company practice view renders the full matching snapshot as expanded,
+collapsible topic sections rather than a paginated table. Topic, difficulty, and
+completion dropdowns filter those sections together. Each source topic receives
+its matching problems in source order; missing topics use Uncategorized. Problems
+with multiple topics appear in each relevant section, while overall totals count
+distinct identities and completion updates propagate to every occurrence.
+Section headers show completed and total problem counts. The API's separate
+paginated projection remains available; this view uses the complete snapshot.
+Sections and the topic dropdown prioritize Top Interview 150's topic order,
+followed by all remaining topics alphabetically. Sorting aliases place Array and
+String first, Hash Table at Hashmap, Binary Tree at Binary Tree General, Graph at
+Graph General, Heap (Priority Queue) at Heap, and generic Dynamic Programming at
+the start of the DP sections. Source labels and memberships remain unchanged;
+the view does not infer BFS or DP dimensionality from a problem's other tags.
+
 ## Database relationships
 
 ```mermaid
